@@ -10,7 +10,7 @@ app = fastapi.FastAPI()
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],  #will only allow the react frontend
     allow_credentials=True,
     allow_methods=["POST"],  
     allow_headers=["*"],  
@@ -46,7 +46,7 @@ generation_args = {
 #print("LLM Model: " + output[0]['generated_text']) 
 
 
-## get backend
+#POST backend
 @app.post('/chat')
 async def chat(request: fastapi.Request):
     body = await request.json()
@@ -57,7 +57,7 @@ async def chat(request: fastapi.Request):
 
     start_time = time.time()
 
-    # Generate response from the model
+    #response from the model
     message = [{"role": "user", "content": user_input}]
     output = pipe(message, **generation_args)
 
@@ -70,9 +70,15 @@ async def chat(request: fastapi.Request):
     }
 
 
-# Run the server when the script is executed
+#Server will start when the script is executed
 if __name__ == "__main__":
-    print("Starting server...")
+    print("Starting a HTTPS server...")
     
-    # Uvicorn server settings
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    #Uvicorn server settings
+    #Host, port, certificate and the key
+    uvicorn.run(app, 
+                host="127.0.0.1", 
+                port=8000,
+                ssl_certfile="cert.pem",  #the self signed certificate
+                ssl_keyfile="key.pem",    #the secret key
+    )

@@ -10,7 +10,7 @@ def chat_with_model():
             break
 
         # Send the POST request to the server
-        url = "http://127.0.0.1:8000/chat"
+        url = "https://127.0.0.1:8000/chat"
         payload = {"input": user_input}
 
         try:
